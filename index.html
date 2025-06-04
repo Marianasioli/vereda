@@ -271,7 +271,14 @@
   </style>
 </head>
 <body>
-
+  <button id="abrir-carrinho" style="position: fixed; top: 20px; right: 20px; background-color: #cde4da; color: #375a4e; border: none; padding: 20px 25px; border-radius: 5px; cursor: pointer;">🛒 ver carrinho.</button>
+  <div id="carrinho-modal" style="display: none; position: fixed; top: 80px; right: 20px; width: 300px; background: white; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.2); padding: 20px; z-index: 9999;">
+    <h3>Carrinho</h3>
+    <ul id="carrinho-itens" style="list-style: none; padding-left: 0;"></ul>
+    <p><strong>Total:</strong> R$ <span id="carrinho-total">0.00</span></p>
+    <button onclick="fecharCarrinho()" style="background-color: #f0f0f0; border: none; padding: 5px 10px; margin-top: 10px; cursor: pointer;">Fechar</button>
+  </div>
+  
   <div vw class="enabled">
   <div vw-access-button class="active"></div>
   <div vw-plugin-wrapper>
@@ -506,7 +513,47 @@ Somos mais do que uma marca. Somos um caminho. Um respiro. Uma Vereda de paz em 
       console.log("Carrinho:", carrinho);
     }
   </script>
+<script>
+  const carrinho = [];
 
+  function adicionarAoCarrinho(produto, preco) {
+    carrinho.push({ produto, preco });
+    atualizarCarrinho();
+    alert(`${produto} adicionado ao carrinho!`);
+  }
+
+  function atualizarCarrinho() {
+    const lista = document.getElementById("carrinho-itens");
+    const totalSpan = document.getElementById("carrinho-total");
+    lista.innerHTML = "";
+    let total = 0;
+
+    carrinho.forEach((item, index) => {
+      total += item.preco;
+      const li = document.createElement("li");
+      li.innerHTML = `
+        ${item.produto} - R$ ${item.preco.toFixed(2)}
+        <button onclick="removerItem(${index})" style="margin-left: 10px; color: red; background: none; border: none; cursor: pointer;">✖</button>
+      `;
+      lista.appendChild(li);
+    });
+
+    totalSpan.textContent = total.toFixed(2);
+  }
+
+  function removerItem(index) {
+    carrinho.splice(index, 1);
+    atualizarCarrinho();
+  }
+
+  function fecharCarrinho() {
+    document.getElementById("carrinho-modal").style.display = "none";
+  }
+
+  document.getElementById("abrir-carrinho").addEventListener("click", () => {
+    document.getElementById("carrinho-modal").style.display = "block";
+  });
+</script>
 </body>
 </html>
 
